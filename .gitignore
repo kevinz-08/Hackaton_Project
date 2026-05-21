@@ -1,2 +1,8 @@
 node_modules/
-.env*
+
+# Env files (keep .env.example)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
