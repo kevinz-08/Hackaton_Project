@@ -13,8 +13,8 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'ANDES — Catálogo 3D',
-  description: 'Recursos didácticos y de accesibilidad impresos en 3D',
+  title: 'ANDES 3D',
+  description: 'Recursos didacticos y de accesibilidad impresos en 3D',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

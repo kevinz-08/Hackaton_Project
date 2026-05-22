@@ -28,6 +28,7 @@ export function Navbar() {
           <Link href="/" className="hover:text-white transition-colors">Catálogo</Link>
           <Link href="/solicitud" className="hover:text-white transition-colors">Solicitar</Link>
           <Link href="/admin" className="hover:text-white transition-colors">Admin</Link>
+          <Link href="/admin/Img_a_3d" className="hover:text-white transition-colors">Imagen a 3D</Link>
         </div>
 
         {/* Right actions */}
@@ -80,9 +81,10 @@ export function Navbar() {
             className="sm:hidden fixed top-[57px] inset-x-0 z-30 bg-[#0F0720] border-b border-white/[0.06] px-4 py-5 flex flex-col gap-4 shadow-2xl"
           >
             {[
-              { href: '/', label: 'Catálogo' },
+              { href: '/', label: 'pruebas' },
               { href: '/solicitud', label: 'Solicitar' },
               { href: '/admin', label: 'Admin' },
+              { href: '/admin/Img_a_3d', label: 'Imagen a 3D' },
             ].map(({ href, label }) => (
               <Link
                 key={href}
