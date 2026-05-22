@@ -1,50 +1,76 @@
-generator client {
-  provider = "prisma-client-js"
-}
+  generator client {
+    provider = "prisma-client-js"
+  }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
-}
+  datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+  }
 
-model Modelo {
-  id          String      @id @default(cuid())
-  nombre      String
-  categoria   Categoria
-  descripcion String
-  archivoGlb  String
-  imagen      String
-  solicitudes Solicitud[]
-}
+  model Modelo {
+    id           String      @id @default(cuid())
+    codigoReal   String      @unique  // RD-001 … RD-025
+    nombre       String
+    descripcion  String
+    categoria    Categoria
+    material     String      // PLA, TPU, PETG, PLA+
+    costoBase    Int         // en COP
+    archivoGlb   String      // ruta en /public/modelos/
+    imagen       String      // ruta en /public/thumbnails/
+    horasTotal   Float       // tiempo de producción total
+    disponibles  Int         @default(0)
+    solicitudes  Solicitud[]
+  }
 
-model Solicitud {
-  id            String    @id @default(cuid())
-  nombre        String
-  cedula        String    @unique
-  ciudad        String
-  correo        String
-  telefono      String
-  tipoMaterial  Categoria
-  modeloId      String
-  estado        Estado    @default(RECIBIDA)
-  fechaRegistro DateTime  @default(now())
-  modelo        Modelo    @relation(fields: [modeloId], references: [id])
-}
+  model Solicitud {
+    id            String   @id @default(cuid())
+    codigoReal    String?  @unique  // SOL-001 … SOL-025 para datos semilla
+    nombre        String
+    cedula        String   @unique
+    ciudad        String
+    correo        String
+    telefono      String
+    institucion   String?
+    tipoMaterial  Categoria
+    modeloId      String
+    cantidad      Int      @default(1)
+    estado        Estado   @default(INTERESADO)
+    prioridad     Prioridad @default(MEDIA)
+    responsable   String?
+    fechaRegistro DateTime @default(now())
+    modelo        Modelo   @relation(fields: [modeloId], references: [id])
+  }
 
-enum Categoria {
-  ACCESIBILIDAD_VISUAL
-  ACCESIBILIDAD_MOTRIZ
-  MATERIAL_DIDACTICO
-  COMUNICACION_AUMENTATIVA
-  FIGURAS_DIDACTICAS
-  ACCESORIOS_ACCESIBILIDAD
-}
+  enum Categoria {
+    ACCESIBILIDAD_VISUAL
+    ACCESIBILIDAD_MOTRIZ
+    MATERIAL_DIDACTICO
+    COMUNICACION_AUMENTATIVA
+    FIGURAS_DIDACTICAS
+    ACCESORIOS_ACCESIBILIDAD
+  }
 
-enum Estado {
-  RECIBIDA
-  EN_PRODUCCION
-  REVISION_CALIDAD
-  EMPAQUE_TRANSPORTE
-  ENTREGADA
-}
+  // Estados CRM (ficha técnica, obligatorios para evaluación)
+  // + Estados de producción (Excel real de ANDES)
+  enum Estado {
+    // Fase CRM — seguimiento de contacto
+    INTERESADO
+    NO_INTERESADO
+    CONFIRMO
+    LLAMAR_DESPUES
+    NO_RESPONDE
+    NO_CONTESTO
+    // Fase producción — flujo real de ANDES
+    RECIBIDA
+    EN_PRODUCCION
+    REVISION_CALIDAD
+    EMPAQUE_TRANSPORTE
+    ENTREGADA
+  }
+
+  enum Prioridad {
+    ALTA
+    MEDIA
+    BAJA
+  }
