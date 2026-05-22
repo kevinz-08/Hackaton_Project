@@ -2,6 +2,7 @@
 
 import { useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { CameraCapture } from '@/presentation/components/admin/CameraCapture';
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 type Step = 'upload' | 'processing' | 'result';
@@ -33,6 +34,7 @@ export default function ImgA3DPage() {
   const [step, setStep]           = useState<Step>('upload');
   const [file, setFile]           = useState<File | null>(null);
   const [preview, setPreview]     = useState<string | null>(null);
+  const [showCamera, setShowCamera] = useState(false);
   const [model, setModel]         = useState<ModelId>('hitem3dv2.0');
   const [resolution, setResolution] = useState('1536');
   const [progress, setProgress]   = useState(8);
@@ -158,7 +160,7 @@ export default function ImgA3DPage() {
     if (pollRef.current) clearInterval(pollRef.current);
     setStep('upload'); setFile(null); setPreview(null);
     setProgress(8); setStatusMsg(''); setTaskId('');
-    setGlbUrl(''); setError('');
+    setGlbUrl(''); setError(''); setShowCamera(false);
     setModel('hitem3dv2.0'); setResolution('1536');
   };
 
@@ -191,43 +193,80 @@ export default function ImgA3DPage() {
           {step === 'upload' && (
             <motion.div key="upload" {...fade}>
 
-              {/* Drop zone */}
-              <div
-                className={`relative rounded-2xl border-2 border-dashed transition-colors cursor-pointer flex items-center justify-center min-h-[200px] overflow-hidden
-                  ${preview ? 'border-[#6C3FCF]/60 bg-[#6C3FCF]/5' : 'border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/20'}`}
-                onClick={() => fileInputRef.current?.click()}
-                onDragOver={e => e.preventDefault()}
-                onDrop={onDrop}
-              >
-                {preview ? (
-                  <>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={preview} alt="Vista previa" className="max-h-[280px] w-full object-contain rounded-xl" />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                      <span className="text-white text-sm font-medium">Cambiar imagen</span>
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-center py-8 px-4">
-                    <div className="w-12 h-12 rounded-xl bg-white/[0.05] flex items-center justify-center mx-auto mb-3">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/30">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" strokeLinecap="round" strokeLinejoin="round"/>
-                        <polyline points="17 8 12 3 7 8" strokeLinecap="round" strokeLinejoin="round"/>
-                        <line x1="12" y1="3" x2="12" y2="15" strokeLinecap="round"/>
-                      </svg>
-                    </div>
-                    <p className="text-white/50 text-sm">Toca o arrastra una imagen aquí</p>
-                    <p className="text-white/20 text-xs mt-1">PNG · JPG · WEBP · máx 20 MB</p>
+              {/* Camera view */}
+              {showCamera ? (
+                <CameraCapture
+                  onCapture={(f) => { handleFile(f); setShowCamera(false); }}
+                  onClose={() => setShowCamera(false)}
+                />
+              ) : (
+                <>
+                  {/* Drop zone */}
+                  <div
+                    className={`relative rounded-2xl border-2 border-dashed transition-colors cursor-pointer flex items-center justify-center min-h-[200px] overflow-hidden
+                      ${preview ? 'border-[#6C3FCF]/60 bg-[#6C3FCF]/5' : 'border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/20'}`}
+                    onClick={() => fileInputRef.current?.click()}
+                    onDragOver={e => e.preventDefault()}
+                    onDrop={onDrop}
+                  >
+                    {preview ? (
+                      <>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={preview} alt="Vista previa" className="max-h-[280px] w-full object-contain rounded-xl" />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                          <span className="text-white text-sm font-medium">Cambiar imagen</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-center py-8 px-4">
+                        <div className="w-12 h-12 rounded-xl bg-white/[0.05] flex items-center justify-center mx-auto mb-3">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/30">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" strokeLinecap="round" strokeLinejoin="round"/>
+                            <polyline points="17 8 12 3 7 8" strokeLinecap="round" strokeLinejoin="round"/>
+                            <line x1="12" y1="3" x2="12" y2="15" strokeLinecap="round"/>
+                          </svg>
+                        </div>
+                        <p className="text-white/50 text-sm">Toca o arrastra una imagen aquí</p>
+                        <p className="text-white/20 text-xs mt-1">PNG · JPG · WEBP · máx 20 MB</p>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                className="hidden"
-                onChange={onFileInput}
-              />
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    className="hidden"
+                    onChange={onFileInput}
+                  />
+                </>
+              )}
+
+              {/* Action buttons (only when not showing camera) */}
+              {!showCamera && !preview && (
+                <div className="flex gap-2 mt-3">
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex-1 bg-white/[0.05] hover:bg-white/[0.08] text-white/70 text-sm font-medium py-2.5 rounded-xl border border-white/10 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" strokeLinecap="round" strokeLinejoin="round"/>
+                      <polyline points="17 8 12 3 7 8" strokeLinecap="round" strokeLinejoin="round"/>
+                      <line x1="12" y1="3" x2="12" y2="15" strokeLinecap="round"/>
+                    </svg>
+                    Subir imagen
+                  </button>
+                  <button
+                    onClick={() => setShowCamera(true)}
+                    className="flex-1 bg-white/[0.05] hover:bg-white/[0.08] text-white/70 text-sm font-medium py-2.5 rounded-xl border border-white/10 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round"/>
+                      <circle cx="12" cy="13" r="4" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    Tomar foto
+                  </button>
+                </div>
+              )}
 
               {/* Info de archivo */}
               {file && (
@@ -238,6 +277,16 @@ export default function ImgA3DPage() {
                     <p className="text-white/80 text-sm truncate">{file.name}</p>
                     <p className="text-white/30 text-xs">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                   </div>
+                  <button
+                    onClick={() => setShowCamera(true)}
+                    className="text-xs bg-white/5 hover:bg-white/10 text-white/50 px-2.5 py-1.5 rounded-lg border border-white/10 transition-colors flex items-center gap-1.5"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                      <circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    Cámara
+                  </button>
                   <span className="text-xs bg-[#6C3FCF]/20 text-[#9B7AE8] px-2.5 py-1 rounded-full border border-[#6C3FCF]/30">
                     Lista ✓
                   </span>

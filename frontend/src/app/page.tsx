@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Categoria, CATEGORIA_LABELS } from '@/types';
 import { useModelos } from '@/presentation/hooks/use-modelos';
@@ -14,10 +14,31 @@ const FILTROS: Array<{ label: string; value: Categoria | undefined }> = [
   })),
 ];
 
+function useCols() {
+  const [cols, setCols] = useState(4);
+  useEffect(() => {
+    function update() {
+      const w = window.innerWidth;
+      if (w < 640) setCols(1);
+      else if (w < 1024) setCols(2);
+      else if (w < 1280) setCols(3);
+      else setCols(4);
+    }
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+  return cols;
+}
+
 export default function CatalogoPage() {
   const [categoriaFiltro, setCategoriaFiltro] = useState<Categoria | undefined>();
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
   const { modelos, loading, error } = useModelos(categoriaFiltro);
+
+  const cols = useCols();
+  const pageSize = cols * 2;
 
   const filtered = useMemo(() => {
     if (!search.trim()) return modelos;
@@ -26,6 +47,11 @@ export default function CatalogoPage() {
       m => m.nombre.toLowerCase().includes(q) || m.descripcion.toLowerCase().includes(q)
     );
   }, [modelos, search]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
+
+  useEffect(() => { setPage(1); }, [filtered.length, cols]);
 
   return (
     <>
@@ -142,11 +168,57 @@ export default function CatalogoPage() {
 
           {/* Grid */}
           {!loading && !error && filtered.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-              {filtered.map((modelo, i) => (
-                <ModelCard key={modelo.id} modelo={modelo} index={i} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {paginated.map((modelo, i) => (
+                  <ModelCard key={modelo.id} modelo={modelo} index={i} />
+                ))}
+              </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between flex-wrap gap-3 mt-10">
+                  <p className="text-xs sm:text-sm text-white/30">
+                    Mostrando {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, filtered.length)} de {filtered.length}
+                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => setPage(p => Math.max(1, p - 1))}
+                      disabled={page === 1}
+                      className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed text-white/50 hover:text-white hover:bg-white/5"
+                    >
+                      ← Anterior
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter(p => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
+                      .map((p, idx, arr) => (
+                        <span key={p} className="flex items-center gap-1.5">
+                          {idx > 0 && arr[idx - 1] !== p - 1 && (
+                            <span className="px-1 text-white/20 text-xs">…</span>
+                          )}
+                          <button
+                            onClick={() => setPage(p)}
+                            className="min-w-[32px] h-8 rounded-lg text-sm font-medium transition-all"
+                            style={{
+                              backgroundColor: p === page ? '#6C3FCF' : 'transparent',
+                              color: p === page ? '#F9FAFB' : '#94A3B8',
+                            }}
+                          >
+                            {p}
+                          </button>
+                        </span>
+                      ))}
+                    <button
+                      onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                      disabled={page === totalPages}
+                      className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed text-white/50 hover:text-white hover:bg-white/5"
+                    >
+                      Siguiente →
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
