@@ -42,6 +42,23 @@
     modelo        Modelo   @relation(fields: [modeloId], references: [id])
   }
 
+  model ModeloGenerado {
+    id            String          @id @default(cuid())
+    taskId        String          @unique
+    glbUrl        String          @default("")
+    imagenUrl     String
+    nombre        String?
+    estado        EstadoGenerado  @default(PROCESANDO)
+    creadoEn      DateTime        @default(now())
+    actualizadoEn DateTime        @updatedAt
+  }
+
+  enum EstadoGenerado {
+    PROCESANDO
+    COMPLETADO
+    FALLIDO
+  }
+
   enum Categoria {
     ACCESIBILIDAD_VISUAL
     ACCESIBILIDAD_MOTRIZ

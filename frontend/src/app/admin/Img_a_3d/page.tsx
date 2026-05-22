@@ -1,6 +1,6 @@
 'use client';
-import '@google/model-viewer';
-import { useRef, useState, useCallback } from 'react';
+export const dynamic = 'force-dynamic';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CameraCapture } from '@/presentation/components/admin/CameraCapture';
 import { useModeloGenerado } from '@/presentation/hooks/use-modelo-generado';
@@ -29,6 +29,8 @@ const RES_BY_MODEL: Record<ModelId, ResOption[]> = {
 
 export default function ImgA3DPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => { import('@google/model-viewer'); }, []);
   const pollRef      = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [step,       setStep]       = useState<Step>('upload');

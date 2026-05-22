@@ -7,6 +7,7 @@ import { KpiCards } from '@/presentation/components/admin/KpiCards';
 import { FilterBar } from '@/presentation/components/admin/FilterBar';
 import { ExportButton } from '@/presentation/components/admin/ExportButton';
 import { Pagination } from '@/presentation/components/admin/Pagination';
+import { Charts } from '@/presentation/components/admin/Charts';
 import { AdminTable } from '@/presentation/components/AdminTable';
 
 const ESTADOS = Object.keys(ESTADO_LABELS) as Estado[];
@@ -115,6 +116,13 @@ export default function AdminPage() {
         {!loading && !error && (
           <div className="mb-6">
             <KpiCards total={filtered.length} contadores={contadores} />
+          </div>
+        )}
+
+        {/* Charts */}
+        {!loading && !error && filtered.length > 0 && (
+          <div className="mb-6">
+            <Charts data={filtered} />
           </div>
         )}
 
