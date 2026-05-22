@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Props {
   src: string;
@@ -10,12 +10,21 @@ interface Props {
 export function ModelViewerInner({ src, alt, className = '' }: Props) {
   const [error, setError] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
     import('@google/model-viewer')
       .then(() => setLoaded(true))
       .catch(() => setError(true));
   }, []);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const handler = () => setError(true);
+    el.addEventListener('error', handler);
+    return () => el.removeEventListener('error', handler);
+  }, [loaded]);
 
   if (error) {
     return (
@@ -33,14 +42,14 @@ export function ModelViewerInner({ src, alt, className = '' }: Props) {
   return (
     // @ts-ignore model-viewer is a custom element
     <model-viewer
+      ref={ref}
       src={src}
       alt={alt}
       auto-rotate
       camera-controls
       shadow-intensity="1"
       style={{ width: '100%', height: '100%' }}
-      class={className}
-      onError={() => setError(true)}
+      className={className}
     />
   );
 }
