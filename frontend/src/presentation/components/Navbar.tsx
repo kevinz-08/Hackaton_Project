@@ -61,7 +61,9 @@ export function Navbar() {
           <button
             onClick={() => setMenuOpen(v => !v)}
             className="sm:hidden p-2 rounded-lg hover:bg-white/[0.07] text-white/60 hover:text-white transition-colors"
-            aria-label="Menú"
+            aria-label="Menú de navegación"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path d="M2 4.5h14M2 9h14M2 13.5h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -78,6 +80,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18 }}
+            id="mobile-menu"
             className="sm:hidden fixed top-[57px] inset-x-0 z-30 bg-[#0F0720] border-b border-white/[0.06] px-4 py-5 flex flex-col gap-4 shadow-2xl"
           >
             {[

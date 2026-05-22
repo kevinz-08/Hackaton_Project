@@ -55,7 +55,7 @@ export function ChatWidget() {
               <p className="text-white font-semibold text-sm leading-tight">Asistente ANDES</p>
               <p className="text-purple-200 text-xs">Recursos didácticos 3D</p>
             </div>
-            <button onClick={() => setOpen(false)} className="text-white/70 hover:text-white text-lg leading-none">✕</button>
+            <button onClick={() => setOpen(false)} aria-label="Cerrar chat" className="text-white/70 hover:text-white text-lg leading-none">✕</button>
           </div>
 
           {/* Mensajes */}
@@ -92,11 +92,13 @@ export function ChatWidget() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && send()}
               placeholder="Escribe tu mensaje..."
+              aria-label="Escribe tu mensaje"
               className="flex-1 bg-white/10 text-white placeholder-gray-500 rounded-xl px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#6C3FCF]"
             />
             <button
               onClick={send}
               disabled={loading || !input.trim()}
+              aria-label="Enviar mensaje"
               className="bg-[#6C3FCF] hover:bg-[#5a33b0] disabled:opacity-40 text-white rounded-xl px-3 py-2 text-sm transition-colors"
             >
               ➤
@@ -109,7 +111,8 @@ export function ChatWidget() {
       <button
         onClick={() => setOpen((v) => !v)}
         className="fixed bottom-4 right-4 z-50 w-14 h-14 rounded-full bg-[#6C3FCF] hover:bg-[#5a33b0] shadow-lg flex items-center justify-center transition-all hover:scale-110"
-        aria-label="Abrir asistente"
+        aria-label={open ? 'Cerrar asistente' : 'Abrir asistente'}
+        aria-expanded={open}
       >
         {open ? (
           <span className="text-white text-xl">✕</span>

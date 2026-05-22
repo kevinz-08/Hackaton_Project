@@ -152,8 +152,8 @@ npx prisma generate  # Regenerar cliente Prisma tras cambios en schema
 **Fase CRM** (seguimiento de contacto — requerido por ficha técnica):
 `INTERESADO` · `CONFIRMO` · `LLAMAR_DESPUES` · `NO_RESPONDE` · `NO_CONTESTO` · `NO_INTERESADO`
 
-**Fase Producción** (pipeline real de ANDES):
-`RECIBIDA` · `EN_PRODUCCION` · `REVISION_CALIDAD` · `EMPAQUE_TRANSPORTE` · `ENTREGADA`
+**Fase Producción** (pipeli
+ANSPORTE` · `ENTREGADA`
 
 ### Categorías de producto
 

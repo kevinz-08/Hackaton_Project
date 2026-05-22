@@ -116,7 +116,7 @@ export function AdminTable({ solicitudes, onEstadoChange }: Props) {
                     <select
                       value={s.estado}
                       onChange={(e) => handleQuickEstado(s.id, e.target.value as Estado)}
-                      className="text-xs rounded-lg px-2 py-1.5 transition-all cursor-pointer opacity-0 group-hover:opacity-100 focus:opacity-100"
+                      className="text-xs rounded-lg px-2 py-1.5 transition-all cursor-pointer opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus:opacity-100"
                       style={{
                         backgroundColor: '#1A2235',
                         color: '#94A3B8',
@@ -129,7 +129,7 @@ export function AdminTable({ solicitudes, onEstadoChange }: Props) {
                     </select>
                     <button
                       onClick={() => setSelected(s)}
-                      className="p-1.5 rounded-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
+                      className="p-1.5 rounded-lg transition-all opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus:opacity-100"
                       style={{ color: '#4B5563' }}
                       onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#1A2235'; e.currentTarget.style.color = '#94A3B8'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#4B5563'; }}

@@ -25,15 +25,15 @@ function SolicitudContent() {
       .finally(() => setLoading(false));
   }, [modeloId]);
 
-  if (loading) return <div className="max-w-2xl mx-auto p-8 animate-pulse h-96 bg-white rounded-xl mt-8" />;
-  if (error || !modelo) return <div className="text-center py-16 text-red-500">{error ?? 'Modelo no encontrado.'}</div>;
+  if (loading) return <div className="max-w-2xl mx-auto p-8 animate-pulse h-96 bg-white/[0.04] rounded-xl mt-8" />;
+  if (error || !modelo) return <div className="text-center py-16 text-red-400">{error ?? 'Modelo no encontrado.'}</div>;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Solicitar recurso</h1>
+      <h1 className="text-2xl font-bold text-white mb-6">Solicitar recurso</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white rounded-xl border border-gray-100 p-4 flex flex-col gap-3">
+        <div className="bg-[#E8E8F0] rounded-xl border border-white/[0.08] p-4 flex flex-col gap-3">
           <div className="h-64 rounded-lg overflow-hidden">
             <ModelViewer src={modelo.archivoGlb} alt={modelo.nombre} />
           </div>
@@ -43,8 +43,8 @@ function SolicitudContent() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-100 p-6">
-          <h2 className="font-semibold text-gray-900 mb-4">Datos de la institución</h2>
+        <div className="bg-[#0F0720] rounded-xl border border-white/[0.08] p-6">
+          <h2 className="font-semibold text-white mb-4">Datos de la institución</h2>
           <SolicitudForm modelo={modelo} />
         </div>
       </div>
@@ -54,7 +54,7 @@ function SolicitudContent() {
 
 export default function SolicitudPage() {
   return (
-    <Suspense fallback={<div className="max-w-2xl mx-auto p-8 animate-pulse h-96 bg-white rounded-xl mt-8" />}>
+    <Suspense fallback={<div className="max-w-2xl mx-auto p-8 animate-pulse h-96 bg-white/[0.04] rounded-xl mt-8" />}>
       <SolicitudContent />
     </Suspense>
   );
