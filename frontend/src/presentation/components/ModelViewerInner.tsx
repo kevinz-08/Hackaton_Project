@@ -31,7 +31,7 @@ export function ModelViewerInner({ src, alt, className = '' }: Props) {
   }
 
   return (
-    // @ts-expect-error model-viewer is a custom element
+    // @ts-ignore model-viewer is a custom element
     <model-viewer
       src={src}
       alt={alt}
