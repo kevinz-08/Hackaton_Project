@@ -8,3 +8,7 @@ node_modules/
 .env.production.local
 
 /generated/prisma
+
+# Root-level Prisma leftovers (app lives in /frontend)
+/prisma/
+/prisma.config.ts
