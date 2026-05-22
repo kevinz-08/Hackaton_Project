@@ -1,6 +1,8 @@
-# ANDES — Catálogo 3D de Recursos Educativos
+# ANDES — Catálogo 3D de Recursos Educativos y de Accesibilidad
 
-Plataforma web para que instituciones educativas y sociales soliciten recursos didácticos impresos en 3D. Permite explorar un catálogo interactivo con visor 3D, registrar solicitudes y gestionar el pipeline de producción desde un panel administrativo.
+MVP desarrollado en el Hackathon Talento Tech Oriente (21–22 Mayo 2026, Bucaramanga).
+
+Plataforma web que centraliza la gestión del catálogo social de ANDES: permite a beneficiarios explorar 25 recursos didácticos y de accesibilidad en 3D interactivo, registrar solicitudes, y al equipo administrativo gestionar el pipeline completo desde un dashboard en tiempo real.
 
 ---
 
@@ -8,192 +10,175 @@ Plataforma web para que instituciones educativas y sociales soliciten recursos d
 
 | Capa | Tecnología |
 |---|---|
-| Frontend | Next.js 14 (App Router) + Tailwind CSS |
+| Framework | Next.js 14 (App Router + API Routes) |
 | Visor 3D | `@google/model-viewer` |
-| Backend | NestJS + TypeScript |
-| ORM | Prisma |
+| ORM | Prisma 5 |
 | Base de datos | PostgreSQL via Supabase |
+| Estilos | Tailwind CSS |
+| Deploy | Vercel |
 
 ---
 
 ## Arquitectura
 
+Todo el código de la aplicación vive en `frontend/`. No hay backend separado — las API Routes de Next.js sirven como capa de servidor.
+
 ```
-┌─────────────────────────────────────┐
-│        Next.js — puerto 3000        │
-│  /           → Catálogo 3D          │
-│  /solicitud  → Formulario           │
-│  /admin      → Dashboard admin      │
-└──────────────┬──────────────────────┘
-               │ HTTP fetch
-┌──────────────▼──────────────────────┐
-│        NestJS API — puerto 4000     │
-│  GET    /modelos                    │
-│  GET    /modelos/:id                │
-│  POST   /solicitudes                │
-│  GET    /solicitudes                │
-│  PATCH  /solicitudes/:id            │
-└──────────────┬──────────────────────┘
-               │ Prisma ORM
-┌──────────────▼──────────────────────┐
-│     PostgreSQL (Supabase cloud)     │
-└─────────────────────────────────────┘
+frontend/src/
+├── app/
+│   ├── page.tsx                  → Catálogo 3D público
+│   ├── solicitud/page.tsx        → Formulario de registro
+│   ├── solicitud/exito/page.tsx  → Confirmación de envío
+│   ├── admin/page.tsx            → Dashboard administrativo
+│   └── api/
+│       ├── modelos/route.ts      → GET (lista + filtro categoría)
+│       ├── modelos/[id]/route.ts → GET por ID
+│       ├── solicitudes/route.ts  → GET (filtros) + POST
+│       └── solicitudes/[id]/route.ts → PATCH estado
+├── domain/           → Entidades e interfaces de repositorio
+├── application/      → Use cases
+├── infrastructure/   → Repositorios HTTP + api-client
+├── presentation/     → Componentes React + hooks
+├── services/         → Lógica de DB llamada desde API routes
+└── lib/              → Prisma singleton + manejo de errores
 ```
+
+**Flujo de datos:**
+
+- **Servidor:** `app/api/*/route.ts` → `services/*.service.ts` → `lib/prisma.ts`
+- **Cliente:** `presentation/hooks/` → `infrastructure/repositories/` → API routes
 
 ---
 
 ## Requisitos previos
 
 - Node.js 18 o superior
-- npm 9 o superior
-- Cuenta en [Supabase](https://supabase.com) (el proyecto ya existe, pedir credenciales al líder del equipo)
+- Cuenta en [Supabase](https://supabase.com) con el proyecto creado
 
 ---
 
-## Setup local (paso a paso)
+## Setup local
 
 ### 1. Clonar el repositorio
 
 ```bash
 git clone <url-del-repo>
-cd Hackaton
+cd Hackaton/frontend
 ```
 
-### 2. Configurar el Backend
+### 2. Instalar dependencias
 
 ```bash
-cd backend
 npm install
 ```
 
-Crear el archivo `backend/.env` (pedir los valores reales al líder del equipo):
+### 3. Configurar variables de entorno
+
+Crear `frontend/.env` con las credenciales de Supabase:
 
 ```env
+# Conexión con pooling — para queries en runtime
 DATABASE_URL="postgresql://postgres.[PROJECT-ID]:[PASSWORD]@aws-1-us-east-2.pooler.supabase.com:6543/postgres?pgbouncer=true"
+
+# Conexión directa — para migraciones y Prisma Studio
 DIRECT_URL="postgresql://postgres.[PROJECT-ID]:[PASSWORD]@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
-PORT=4000
-FRONTEND_URL=http://localhost:3000
 ```
 
-> El archivo `backend/.env.example` tiene la estructura exacta. Solo reemplazar `[PROJECT-ID]` y `[PASSWORD]`.
+> Pedir los valores reales de `[PROJECT-ID]` y `[PASSWORD]` al líder del equipo.
 
-Inicializar la base de datos:
+### 4. Crear las tablas en Supabase
 
 ```bash
-npx prisma generate
-npx prisma migrate dev --name init
+npx prisma db push
+```
+
+### 5. Poblar la base de datos
+
+```bash
 npm run seed
 ```
 
-### 3. Configurar el Frontend
+Inserta 25 modelos (RD-001–RD-025) y 25 solicitudes (SOL-001–SOL-025) con datos reales de ANDES.
+
+### 6. Levantar el servidor de desarrollo
 
 ```bash
-cd ../frontend
-npm install
-```
-
-Crear el archivo `frontend/.env`:
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:4000
-```
-
----
-
-## Levantar el proyecto
-
-Abrir **dos terminales** en paralelo:
-
-**Terminal 1 — Backend:**
-```bash
-cd backend
-npm run start:dev
-# Servidor en http://localhost:4000
-```
-
-**Terminal 2 — Frontend:**
-```bash
-cd frontend
 npm run dev
-# Servidor en http://localhost:3000
+# Aplicación en http://localhost:3000
 ```
-
-Abrir el navegador en `http://localhost:3000`.
 
 ---
 
-## Verificar que la base de datos esté conectada
+## Comandos disponibles
+
+Todos desde `frontend/`:
 
 ```bash
-cd backend
-npx prisma studio
-# Abre http://localhost:5555 con interfaz visual de la BD
+npm run dev          # Servidor de desarrollo (localhost:3000)
+npm run build        # Build de producción
+npm run lint         # ESLint
+npm run seed         # Poblar DB con 25 modelos + 25 solicitudes
+npx prisma db push   # Sincronizar schema con Supabase
+npx prisma studio    # GUI visual de la base de datos (localhost:5555)
+npx prisma generate  # Regenerar cliente Prisma tras cambios en schema
 ```
-
-Deberías ver las tablas `Modelo` (15 registros) y `Solicitud` (17 registros) con datos.
 
 ---
 
-## Endpoints de la API
+## API Routes
 
 | Método | Ruta | Descripción |
 |---|---|---|
-| `GET` | `/modelos` | Lista todos los modelos. Acepta `?categoria=MATERIAL_DIDACTICO` |
-| `GET` | `/modelos/:id` | Obtiene un modelo por ID |
-| `POST` | `/solicitudes` | Crea una solicitud (valida cédula única) |
-| `GET` | `/solicitudes` | Lista todas. Acepta `?ciudad=X&estado=Y` |
-| `PATCH` | `/solicitudes/:id` | Actualiza el estado de una solicitud |
+| `GET` | `/api/modelos` | Lista modelos. Acepta `?categoria=MATERIAL_DIDACTICO` |
+| `GET` | `/api/modelos/[id]` | Obtiene un modelo por ID |
+| `POST` | `/api/solicitudes` | Crea solicitud (valida cédula única) |
+| `GET` | `/api/solicitudes` | Lista solicitudes. Acepta `?ciudad=X&estado=Y` |
+| `PATCH` | `/api/solicitudes/[id]` | Actualiza el estado de una solicitud |
 
-**Errores esperados:**
+**Códigos de error:**
 
 | Código | Cuándo |
 |---|---|
-| `400` | Campos inválidos en el body |
-| `404` | Modelo o solicitud no existe |
+| `400` | Campos inválidos o faltantes |
+| `404` | Recurso no encontrado |
 | `409` | Cédula ya registrada |
 
 ---
 
-## Estructura del proyecto
+## Modelo de datos
 
-```
-Hackaton/
-├── backend/
-│   ├── prisma/
-│   │   ├── schema.prisma       ← Modelos de BD
-│   │   └── seed.ts             ← Datos de prueba
-│   ├── src/
-│   │   ├── modelos/            ← Módulo catálogo
-│   │   ├── solicitudes/        ← Módulo solicitudes
-│   │   ├── shared/prisma/      ← PrismaService global
-│   │   ├── app.module.ts
-│   │   └── main.ts             ← CORS + ValidationPipe
-│   └── .env.example
-├── frontend/
-│   ├── src/
-│   │   ├── app/                ← Páginas (App Router)
-│   │   │   ├── page.tsx        ← Catálogo público
-│   │   │   ├── solicitud/      ← Formulario de registro
-│   │   │   └── admin/          ← Dashboard administrativo
-│   │   ├── presentation/
-│   │   │   └── components/     ← ModelCard, ModelViewer, AdminTable...
-│   │   └── infrastructure/     ← API client (fetch al backend)
-│   └── .env.example
-└── README.md
-```
+### Estados de solicitud
+
+**Fase CRM** (seguimiento de contacto — requerido por ficha técnica):
+`INTERESADO` · `CONFIRMO` · `LLAMAR_DESPUES` · `NO_RESPONDE` · `NO_CONTESTO` · `NO_INTERESADO`
+
+**Fase Producción** (pipeline real de ANDES):
+`RECIBIDA` · `EN_PRODUCCION` · `REVISION_CALIDAD` · `EMPAQUE_TRANSPORTE` · `ENTREGADA`
+
+### Categorías de producto
+
+`ACCESIBILIDAD_VISUAL` · `ACCESIBILIDAD_MOTRIZ` · `MATERIAL_DIDACTICO` · `COMUNICACION_AUMENTATIVA` · `FIGURAS_DIDACTICAS` · `ACCESORIOS_ACCESIBILIDAD`
+
+---
+
+## Archivos 3D
+
+Los modelos `.glb` se sirven desde `frontend/public/modelos/` y los thumbnails desde `frontend/public/thumbnails/`.
+
+El seed referencia los 25 archivos por nombre (ej. `abecedario_braille.glb`). Si un archivo no existe, el visor simplemente no carga ese modelo — la app no se rompe.
 
 ---
 
 ## Solución de problemas comunes
 
-**Error `P1001: Can't reach database server`**
-El proyecto de Supabase puede estar pausado (free tier). Ir a [supabase.com/dashboard](https://supabase.com/dashboard), entrar al proyecto y hacer clic en "Restore project".
+**`P1001: Can't reach database server`**
+El proyecto de Supabase puede estar pausado (free tier). Ir al [dashboard de Supabase](https://supabase.com/dashboard) y hacer clic en "Restore project".
 
-**Error `next.config.ts is not supported`**
-Asegurarse de usar `next.config.mjs`. El archivo `.ts` no es compatible con Next.js 14.
+**`prisma db push` se cuelga sin respuesta**
+Ocurre cuando se usa `prisma migrate dev` con el pooler de Supabase. Usar siempre `prisma db push` para este proyecto.
 
-**CORS bloqueando el frontend**
-Verificar que `FRONTEND_URL` en `backend/.env` sea `http://localhost:3000` y que el backend esté corriendo antes del frontend.
+**El visor 3D no renderiza**
+Verificar que el archivo `.glb` exista en `public/modelos/` con el nombre exacto que tiene el campo `archivoGlb` en la DB. Confirmar en Prisma Studio.
 
 **Cambios en `schema.prisma` no se reflejan**
-Correr `npx prisma generate` y reiniciar el backend.
+Correr `npx prisma db push` y luego `npx prisma generate`.
