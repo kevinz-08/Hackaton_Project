@@ -126,14 +126,20 @@ export function Navbar() {
                 {items.length === 0 ? (
                   <p className="text-sm text-white/25 text-center mt-14">Ningún modelo seleccionado aún.</p>
                 ) : (
-                  <ul className="flex flex-col gap-3">
+                  <ul className="flex flex-col gap-2">
                     {items.map(({ modelo, quantity }) => (
-                      <li key={modelo.id} className="flex gap-3 items-start">
-                        <div className="w-10 h-10 rounded-xl bg-[#6C3FCF]/15 flex items-center justify-center shrink-0 text-lg">🧩</div>
-                        <div className="flex-1 min-w-0 pt-0.5">
-                          <p className="text-sm font-medium text-white/90 truncate leading-tight">{modelo.nombre}</p>
-                          <p className="text-white/30 text-xs mt-0.5">×{quantity}</p>
-                        </div>
+                      <li key={modelo.id}>
+                        <Link
+                          href={`/solicitud?modeloId=${modelo.id}`}
+                          onClick={() => setCartOpen(false)}
+                          className="flex gap-3 items-start p-2 rounded-xl hover:bg-white/[0.06] transition-colors"
+                        >
+                          <div className="w-10 h-10 rounded-xl bg-[#6C3FCF]/15 flex items-center justify-center shrink-0 text-lg">🧩</div>
+                          <div className="flex-1 min-w-0 pt-0.5">
+                            <p className="text-sm font-medium text-white/90 truncate leading-tight">{modelo.nombre}</p>
+                            <p className="text-white/30 text-xs mt-0.5">×{quantity} — Solicitar →</p>
+                          </div>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -141,13 +147,13 @@ export function Navbar() {
               </div>
 
               {items.length > 0 && (
-                <div className="px-5 py-4 border-t border-white/[0.06]">
+                <div className="px-5 py-4 border-t border-white/[0.06] space-y-2">
                   <Link
-                    href="/solicitud"
+                    href={items.length === 1 ? `/solicitud?modeloId=${items[0].modelo.id}` : '/solicitud'}
                     onClick={() => setCartOpen(false)}
                     className="block w-full bg-[#6C3FCF] hover:bg-[#7B50DE] text-white font-bold text-sm text-center py-3.5 rounded-full transition-colors shadow-lg shadow-[#6C3FCF]/30"
                   >
-                    Ir a solicitar →
+                    Ir a solicitar{items.length === 1 ? '' : ` (${items.length} modelos)`} →
                   </Link>
                 </div>
               )}
