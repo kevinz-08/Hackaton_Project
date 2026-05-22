@@ -9,6 +9,7 @@ const modelos = [
     categoria: 'ACCESIBILIDAD_VISUAL' as Categoria,
     material: 'PLA',
     costoBase: 4500,
+    calificacion: 4.9,  // inst=4.8, cli=5.0
     archivoGlb: '/modelos/abecedarioBraileModular.glb',
     imagen: '/thumbnails/AbecedarioBraileModular.jpeg',
     horasTotal: 6.0,
@@ -21,6 +22,7 @@ const modelos = [
     categoria: 'MATERIAL_DIDACTICO' as Categoria,
     material: 'TPU',
     costoBase: 8000,
+    calificacion: 4.5,  // inst=4.5
     archivoGlb: '/modelos/atomosYmoleculasKit.glb',
     imagen: '/thumbnails/RD-002.jpg',
     horasTotal: 4.0,
@@ -33,6 +35,7 @@ const modelos = [
     categoria: 'MATERIAL_DIDACTICO' as Categoria,
     material: 'PLA+',
     costoBase: 22000,
+    calificacion: 4.65, // inst=4.3, cli=5.0
     archivoGlb: '/modelos/atomosYmoleculasKit.glb',
     imagen: '/thumbnails/RD-003.jpg',
     horasTotal: 10.0,
@@ -45,6 +48,7 @@ const modelos = [
     categoria: 'ACCESIBILIDAD_VISUAL' as Categoria,
     material: 'PETG',
     costoBase: 35000,
+    calificacion: 4.75, // inst=4.8, cli=4.7
     archivoGlb: '/modelos/abecedarioBraileModular.glb',
     imagen: '/thumbnails/RD-004.jpg',
     horasTotal: 7.5,
@@ -57,6 +61,7 @@ const modelos = [
     categoria: 'MATERIAL_DIDACTICO' as Categoria,
     material: 'PLA',
     costoBase: 18000,
+    calificacion: 4.3,  // inst=4.3
     archivoGlb: '/modelos/atomosYmoleculasKit.glb',
     imagen: '/thumbnails/atomosymoléculas.png',
     horasTotal: 5.0,
@@ -69,6 +74,7 @@ const modelos = [
     categoria: 'COMUNICACION_AUMENTATIVA' as Categoria,
     material: 'PLA+',
     costoBase: 28000,
+    calificacion: 4.9,  // inst=4.8, cli=5.0
     archivoGlb: '/modelos/accesoriotablet.glb',
     imagen: '/thumbnails/RD-006.jpg',
     horasTotal: 7.0,
@@ -81,6 +87,7 @@ const modelos = [
     categoria: 'MATERIAL_DIDACTICO' as Categoria,
     material: 'PLA',
     costoBase: 14000,
+    calificacion: 3.8,  // inst=3.8
     archivoGlb: '/modelos/atomosYmoleculasKit.glb',
     imagen: '/thumbnails/RD-007.jpg',
     horasTotal: 7.0,
@@ -93,6 +100,7 @@ const modelos = [
     categoria: 'ACCESIBILIDAD_VISUAL' as Categoria,
     material: 'PETG',
     costoBase: 6000,
+    calificacion: 5.0,  // inst=5.0
     archivoGlb: '/modelos/abecedarioBraileModular.glb',
     imagen: '/thumbnails/RD-008.jpg',
     horasTotal: 2.0,
@@ -105,6 +113,7 @@ const modelos = [
     categoria: 'MATERIAL_DIDACTICO' as Categoria,
     material: 'PLA',
     costoBase: 12000,
+    calificacion: 4.75, // inst=4.8, cli=4.7
     archivoGlb: '/modelos/atomosYmoleculasKit.glb',
     imagen: '/thumbnails/RD-009.jpg',
     horasTotal: 4.5,
@@ -117,6 +126,7 @@ const modelos = [
     categoria: 'ACCESIBILIDAD_MOTRIZ' as Categoria,
     material: 'TPU',
     costoBase: 3500,
+    calificacion: 4.9,  // inst=4.8, cli=5.0
     archivoGlb: '/modelos/agarreLapizAdaptado.glb',
     imagen: '/thumbnails/adaptadorLapiz.png',
     horasTotal: 1.0,
@@ -129,6 +139,7 @@ const modelos = [
     categoria: 'ACCESIBILIDAD_VISUAL' as Categoria,
     material: 'PLA',
     costoBase: 9000,
+    calificacion: null,
     archivoGlb: '/modelos/abecedarioBraileModular.glb',
     imagen: '/thumbnails/RD-011.jpg',
     horasTotal: 5.5,
@@ -141,6 +152,7 @@ const modelos = [
     categoria: 'MATERIAL_DIDACTICO' as Categoria,
     material: 'PLA+',
     costoBase: 11000,
+    calificacion: null,
     archivoGlb: '/modelos/atomosYmoleculasKit.glb',
     imagen: '/thumbnails/RD-012.jpg',
     horasTotal: 4.3,
@@ -153,6 +165,7 @@ const modelos = [
     categoria: 'ACCESIBILIDAD_VISUAL' as Categoria,
     material: 'PETG',
     costoBase: 7500,
+    calificacion: null,
     archivoGlb: '/modelos/abecedarioBraileModular.glb',
     imagen: '/thumbnails/RD-013.jpg',
     horasTotal: 2.5,
@@ -165,6 +178,7 @@ const modelos = [
     categoria: 'MATERIAL_DIDACTICO' as Categoria,
     material: 'PLA',
     costoBase: 15000,
+    calificacion: null,
     archivoGlb: '/modelos/atomosYmoleculasKit.glb',
     imagen: '/thumbnails/RD-014.jpg',
     horasTotal: 5.8,
@@ -177,6 +191,7 @@ const modelos = [
     categoria: 'ACCESIBILIDAD_MOTRIZ' as Categoria,
     material: 'PETG',
     costoBase: 20000,
+    calificacion: null,
     archivoGlb: '/modelos/accesoriotablet.glb',
     imagen: '/thumbnails/RD-015.jpg',
     horasTotal: 8.0,
@@ -189,6 +204,7 @@ const modelos = [
     categoria: 'FIGURAS_DIDACTICAS' as Categoria,
     material: 'PLA+',
     costoBase: 38000,
+    calificacion: 4.8,  // inst=4.8
     archivoGlb: '/modelos/figuraAnatomicaCorazonHumano.glb',
     imagen: '/thumbnails/figuraAnatomicaCorazonHumano.png',
     horasTotal: 8.5,
@@ -201,6 +217,7 @@ const modelos = [
     categoria: 'FIGURAS_DIDACTICAS' as Categoria,
     material: 'PLA',
     costoBase: 55000,
+    calificacion: 4.55, // inst=4.8, cli=4.3
     archivoGlb: '/modelos/atomosYmoleculasKit.glb',
     imagen: '/thumbnails/FiguraSistemaSolarEscala.jpeg',
     horasTotal: 11.5,
@@ -213,6 +230,7 @@ const modelos = [
     categoria: 'FIGURAS_DIDACTICAS' as Categoria,
     material: 'PLA+',
     costoBase: 42000,
+    calificacion: 4.6,  // inst=4.5, cli=4.7
     archivoGlb: '/modelos/celulaAnimalDesmontable.glb',
     imagen: '/thumbnails/celula_desmontable.png',
     horasTotal: 10.0,
@@ -225,6 +243,7 @@ const modelos = [
     categoria: 'FIGURAS_DIDACTICAS' as Categoria,
     material: 'PETG',
     costoBase: 75000,
+    calificacion: 4.75, // inst=4.5, cli=5.0
     archivoGlb: '/modelos/figuraEsqueletoHumanoArticulado.glb',
     imagen: '/thumbnails/esqueletoHumanoArticulado.png',
     horasTotal: 15.0,
@@ -237,6 +256,7 @@ const modelos = [
     categoria: 'FIGURAS_DIDACTICAS' as Categoria,
     material: 'PLA',
     costoBase: 32000,
+    calificacion: 4.25, // inst=4.5, cli=4.0
     archivoGlb: '/modelos/celulaAnimalDesmontable.glb',
     imagen: '/thumbnails/RD-020.jpg',
     horasTotal: 6.5,
@@ -249,6 +269,7 @@ const modelos = [
     categoria: 'ACCESORIOS_ACCESIBILIDAD' as Categoria,
     material: 'PETG',
     costoBase: 14000,
+    calificacion: 4.9,  // inst=4.8, cli=5.0
     archivoGlb: '/modelos/PortaVasos.glb',
     imagen: '/thumbnails/PortaVasos.png',
     horasTotal: 2.5,
@@ -261,6 +282,7 @@ const modelos = [
     categoria: 'ACCESORIOS_ACCESIBILIDAD' as Categoria,
     material: 'PETG',
     costoBase: 28000,
+    calificacion: 4.5,  // inst=4.3, cli=4.7
     archivoGlb: '/modelos/accesoriotablet.glb',
     imagen: '/thumbnails/soperteTablet.png',
     horasTotal: 5.5,
@@ -273,6 +295,7 @@ const modelos = [
     categoria: 'ACCESORIOS_ACCESIBILIDAD' as Categoria,
     material: 'TPU',
     costoBase: 9000,
+    calificacion: 5.0,  // inst=5.0, cli=5.0
     archivoGlb: '/modelos/abrepuertaMuneca.glb',
     imagen: '/thumbnails/abrepuertas.png',
     horasTotal: 1.3,
@@ -285,6 +308,7 @@ const modelos = [
     categoria: 'FIGURAS_DIDACTICAS' as Categoria,
     material: 'PLA',
     costoBase: 29000,
+    calificacion: 4.6,  // inst=4.5, cli=4.7
     archivoGlb: '/modelos/figuraAnatomicaCorazonHumano.glb',
     imagen: '/thumbnails/piramidegz.jpeg',
     horasTotal: 7.5,
@@ -297,6 +321,7 @@ const modelos = [
     categoria: 'ACCESORIOS_ACCESIBILIDAD' as Categoria,
     material: 'TPU',
     costoBase: 7500,
+    calificacion: 5.0,  // inst=5.0, cli=5.0
     archivoGlb: '/modelos/sujetadorDePapeles.glb',
     imagen: '/thumbnails/sujetadorDePaginas.png',
     horasTotal: 1.0,

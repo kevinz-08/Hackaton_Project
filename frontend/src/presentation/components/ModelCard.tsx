@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Modelo, CATEGORIA_LABELS } from '@/types';
 import { ModelViewer } from './ModelViewer';
+import { StarRating } from './StarRating';
 import { useCart } from '@/presentation/context/CartContext';
 
 const CATEGORY_ICONS: Record<string, string> = {
@@ -79,6 +80,13 @@ export function ModelCard({ modelo, index = 0 }: { modelo: Modelo; index?: numbe
 
           <h3 className="font-bold text-white/90 leading-snug text-[15px]">{modelo.nombre}</h3>
           <p className="text-[13px] text-white/35 line-clamp-2 flex-1 leading-relaxed">{modelo.descripcion}</p>
+
+          <div className="flex items-center justify-between">
+            <p className="text-[15px] font-bold text-[#C4A8FF]">
+              ${modelo.costoBase.toLocaleString('es-CO')} <span className="text-[11px] font-normal text-white/30">COP</span>
+            </p>
+            <StarRating rating={modelo.calificacion} />
+          </div>
 
           {/* Actions */}
           <div className="flex gap-2 mt-1">

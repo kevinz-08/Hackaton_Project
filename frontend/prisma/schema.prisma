@@ -20,6 +20,7 @@
     imagen       String      // ruta en /public/thumbnails/
     horasTotal   Float       // tiempo de producción total
     disponibles  Int         @default(0)
+    calificacion Float?      // promedio satisfacción instituciones + clientes (1-5)
     solicitudes  Solicitud[]
   }
 

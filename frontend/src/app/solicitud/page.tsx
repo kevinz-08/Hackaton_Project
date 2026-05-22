@@ -6,6 +6,7 @@ import { ApiModeloRepository } from '@/infrastructure/repositories/api-modelo.re
 import { GetModeloByIdUseCase } from '@/application/use-cases/get-modelo-by-id.use-case';
 import { SolicitudForm } from '@/presentation/components/SolicitudForm';
 import { ModelViewer } from '@/presentation/components/ModelViewer';
+import { ReviewsSection } from '@/presentation/components/ReviewsSection';
 import { useCart } from '@/presentation/context/CartContext';
 import Link from 'next/link';
 
@@ -122,6 +123,9 @@ function SolicitudContent() {
           <SolicitudForm modelo={modelo} />
         </div>
       </div>
+
+      {/* Reviews section — full width below the grid */}
+      <ReviewsSection codigoReal={modelo.codigoReal} />
     </div>
   );
 }

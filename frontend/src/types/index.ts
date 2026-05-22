@@ -56,12 +56,15 @@ export const PRIORIDAD_COLORS: Record<Prioridad, string> = {
 };
 
 export interface Modelo {
-  id:          string;
-  nombre:      string;
-  categoria:   Categoria;
-  descripcion: string;
-  archivoGlb:  string;   // ruta local /public/modelos/ o URL S3
-  imagen:      string;   // ruta local /public/thumbnails/ o URL S3
+  id:           string;
+  codigoReal:   string;
+  nombre:       string;
+  categoria:    Categoria;
+  descripcion:  string;
+  costoBase:    number;        // precio en COP
+  calificacion: number | null; // promedio satisfacción 1-5 (null = sin datos)
+  archivoGlb:   string;        // ruta local /public/modelos/ o URL S3
+  imagen:       string;        // ruta local /public/thumbnails/ o URL S3
 }
 
 export interface Solicitud {
