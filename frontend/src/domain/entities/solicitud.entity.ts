@@ -1,4 +1,4 @@
-import { Categoria, Estado, ModeloEntity } from '@/types';
+import { Categoria, Estado, Modelo } from '@/types';
 
 export interface SolicitudEntity {
   id: string;
@@ -11,5 +11,5 @@ export interface SolicitudEntity {
   modeloId: string;
   estado: Estado;
   fechaRegistro: string;
-  modelo?: ModeloEntity;
+  modelo?: Modelo;
 }

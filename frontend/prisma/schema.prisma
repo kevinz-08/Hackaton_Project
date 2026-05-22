@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Modelo {
+  id          String      @id @default(cuid())
+  nombre      String
+  categoria   Categoria
+  descripcion String
+  archivoGlb  String
+  imagen      String
+  solicitudes Solicitud[]
+}
+
+model Solicitud {
+  id            String    @id @default(cuid())
+  nombre        String
+  cedula        String    @unique
+  ciudad        String
+  correo        String
+  telefono      String
+  tipoMaterial  Categoria
+  modeloId      String
+  estado        Estado    @default(RECIBIDA)
+  fechaRegistro DateTime  @default(now())
+  modelo        Modelo    @relation(fields: [modeloId], references: [id])
+}
+
+enum Categoria {
+  ACCESIBILIDAD_VISUAL
+  ACCESIBILIDAD_MOTRIZ
+  MATERIAL_DIDACTICO
+  COMUNICACION_AUMENTATIVA
+  FIGURAS_DIDACTICAS
+  ACCESORIOS_ACCESIBILIDAD
+}
+
+enum Estado {
+  RECIBIDA
+  EN_PRODUCCION
+  REVISION_CALIDAD
+  EMPAQUE_TRANSPORTE
+  ENTREGADA
+}
