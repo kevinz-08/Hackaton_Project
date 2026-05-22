@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from 'next/font/google';
 import { CartProvider } from '@/presentation/context/CartContext';
 import { Navbar } from '@/presentation/components/Navbar';
 import { Footer } from '@/presentation/components/Footer';
+import { ChatWidget } from '@/presentation/components/ChatWidget';
 import './globals.css';
 
 const jakarta = Plus_Jakarta_Sans({
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
+          <ChatWidget />
         </CartProvider>
       </body>
     </html>
