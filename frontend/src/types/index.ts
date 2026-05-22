@@ -13,6 +13,8 @@ export type Estado =
   | 'EMPAQUE_TRANSPORTE'
   | 'ENTREGADA';
 
+export type Prioridad = 'ALTA' | 'MEDIA' | 'BAJA';
+
 export const CATEGORIA_LABELS: Record<Categoria, string> = {
   ACCESIBILIDAD_VISUAL: 'Accesibilidad Visual',
   ACCESIBILIDAD_MOTRIZ: 'Accesibilidad Motriz',
@@ -31,11 +33,23 @@ export const ESTADO_LABELS: Record<Estado, string> = {
 };
 
 export const ESTADO_COLORS: Record<Estado, string> = {
-  RECIBIDA: 'bg-gray-100 text-gray-700',
-  EN_PRODUCCION: 'bg-blue-100 text-blue-700',
-  REVISION_CALIDAD: 'bg-yellow-100 text-yellow-700',
-  EMPAQUE_TRANSPORTE: 'bg-orange-100 text-orange-700',
-  ENTREGADA: 'bg-green-100 text-green-700',
+  RECIBIDA: '#F59E0B',
+  EN_PRODUCCION: '#3B82F6',
+  REVISION_CALIDAD: '#8B5CF6',
+  EMPAQUE_TRANSPORTE: '#06B6D4',
+  ENTREGADA: '#10B981',
+};
+
+export const PRIORIDAD_LABELS: Record<Prioridad, string> = {
+  ALTA: 'Alta',
+  MEDIA: 'Media',
+  BAJA: 'Baja',
+};
+
+export const PRIORIDAD_COLORS: Record<Prioridad, string> = {
+  ALTA: '#EF4444',
+  MEDIA: '#F59E0B',
+  BAJA: '#6B7280',
 };
 
 export interface Modelo {
@@ -57,6 +71,11 @@ export interface Solicitud {
   tipoMaterial: Categoria;
   modeloId: string;
   estado: Estado;
+  prioridad?: Prioridad;
+  responsable?: string;
+  institucion?: string;
+  cantidad?: number;
+  codigoReal?: string;
   fechaRegistro: string;
   modelo?: Modelo;
 }
