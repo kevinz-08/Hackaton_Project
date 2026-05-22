@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Modelo } from '@/types';
 import { ApiModeloRepository } from '@/infrastructure/repositories/api-modelo.repository';
@@ -9,7 +9,7 @@ import { ModelViewer } from '@/presentation/components/ModelViewer';
 
 const getModeloById = new GetModeloByIdUseCase(new ApiModeloRepository());
 
-export default function SolicitudPage() {
+function SolicitudContent() {
   const params = useSearchParams();
   const modeloId = params.get('modeloId');
   const [modelo, setModelo] = useState<Modelo | null>(null);
@@ -49,5 +49,13 @@ export default function SolicitudPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SolicitudPage() {
+  return (
+    <Suspense fallback={<div className="max-w-2xl mx-auto p-8 animate-pulse h-96 bg-white rounded-xl mt-8" />}>
+      <SolicitudContent />
+    </Suspense>
   );
 }

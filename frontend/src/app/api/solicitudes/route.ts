@@ -4,6 +4,8 @@ import { Categoria, Estado } from '@prisma/client';
 import { createSolicitud, getSolicitudes } from '@/services/solicitudes.service';
 import { handleApiError } from '@/lib/api-error';
 
+export const dynamic = 'force-dynamic';
+
 const CreateSolicitudSchema = z.object({
   nombre: z.string().min(1, 'Nombre requerido'),
   cedula: z.string().regex(/^\d{6,10}$/, 'Cédula debe tener entre 6 y 10 dígitos'),
