@@ -15,14 +15,12 @@ function SolicitudContent() {
   const params = useSearchParams();
   const modeloId = params.get('modeloId');
   const { items } = useCart();
-  const [selectedModeloId, setSelectedModeloId] = useState<string | null>(modeloId);
   const [modelo, setModelo] = useState<Modelo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const id = modeloId || (items.length === 1 ? items[0].modelo.id : null);
-    setSelectedModeloId(id);
 
     if (!id) {
       setError('No se indicó ningún modelo.');
@@ -30,7 +28,6 @@ function SolicitudContent() {
       return;
     }
 
-    // If modelo is already loaded from a previous render, skip fetch
     if (modelo?.id === id) {
       setLoading(false);
       return;
@@ -94,10 +91,11 @@ function SolicitudContent() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Viewer card — fondo claro para contraste con el modelo 3D */}
         <div
           className="rounded-2xl border overflow-hidden flex flex-col gap-4"
           style={{
-            backgroundColor: '#111827',
+            backgroundColor: '#E8E8F0',
             borderColor: 'rgba(255,255,255,0.06)',
           }}
         >
@@ -105,11 +103,12 @@ function SolicitudContent() {
             <ModelViewer src={modelo.archivoGlb} alt={modelo.nombre} />
           </div>
           <div className="px-5 pb-5">
-            <h2 className="text-lg font-bold" style={{ color: '#F9FAFB' }}>{modelo.nombre}</h2>
-            <p className="text-sm mt-1 leading-relaxed" style={{ color: '#94A3B8' }}>{modelo.descripcion}</p>
+            <h2 className="text-lg font-bold" style={{ color: '#111827' }}>{modelo.nombre}</h2>
+            <p className="text-sm mt-1 leading-relaxed" style={{ color: '#4B5563' }}>{modelo.descripcion}</p>
           </div>
         </div>
 
+        {/* Form card */}
         <div
           className="rounded-2xl border p-6"
           style={{
