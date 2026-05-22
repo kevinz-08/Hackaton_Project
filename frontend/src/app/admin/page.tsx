@@ -9,11 +9,17 @@ import { ExportButton } from '@/presentation/components/admin/ExportButton';
 import { Pagination } from '@/presentation/components/admin/Pagination';
 import { Charts } from '@/presentation/components/admin/Charts';
 import { AdminTable } from '@/presentation/components/AdminTable';
+import { InventarioMateriales } from '@/presentation/components/admin/InventarioMateriales';
+import { TiemposProduccion } from '@/presentation/components/admin/TiemposProduccion';
+import { InventarioProductos } from '@/presentation/components/admin/InventarioProductos';
+
+type Tab = 'dashboard' | 'materiales' | 'tiempos' | 'productos';
 
 const ESTADOS = Object.keys(ESTADO_LABELS) as Estado[];
 const PAGE_SIZE = 10;
 
 export default function AdminPage() {
+  const [tab, setTab] = useState<Tab>('dashboard');
   const [ciudadFiltro, setCiudadFiltro] = useState('');
   const [estadoFiltro, setEstadoFiltro] = useState<Estado | undefined>();
   const [prioridadFiltro, setPrioridadFiltro] = useState<Prioridad | undefined>();
@@ -112,96 +118,132 @@ export default function AdminPage() {
           </div>
         </motion.div>
 
-        {/* KPIs */}
-        {!loading && !error && (
-          <div className="mb-6">
-            <KpiCards total={filtered.length} contadores={contadores} />
-          </div>
-        )}
-
-        {/* Charts */}
-        {!loading && !error && filtered.length > 0 && (
-          <div className="mb-6">
-            <Charts data={filtered} />
-          </div>
-        )}
-
-        {/* Filters */}
-        <div className="mb-4">
-          <FilterBar
-            solicitudes={solicitudes}
-            searchQuery={searchQuery}
-            onSearchChange={(q) => { setSearchQuery(q); handleFilterChange(); }}
-            ciudadFiltro={ciudadFiltro}
-            onCiudadChange={(c) => { setCiudadFiltro(c); handleFilterChange(); }}
-            estadoFiltro={estadoFiltro}
-            onEstadoChange={(e) => { setEstadoFiltro(e); handleFilterChange(); }}
-            prioridadFiltro={prioridadFiltro}
-            onPrioridadChange={(p) => { setPrioridadFiltro(p); handleFilterChange(); }}
-          />
-        </div>
-
-        {/* Content */}
-        {loading && (
-          <div className="space-y-3">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-14 rounded-xl animate-pulse"
-                style={{ backgroundColor: '#111827' }}
-              />
-            ))}
-          </div>
-        )}
-
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center py-20 gap-4"
-          >
-            <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl"
-              style={{ backgroundColor: '#1A2235' }}
-            >
-              ⚠️
-            </div>
-            <p className="text-lg font-medium" style={{ color: '#EF4444' }}>
-              Error al cargar solicitudes
-            </p>
-            <p className="text-sm" style={{ color: '#4B5563' }}>{error}</p>
+        {/* Tabs */}
+        <div className="flex gap-1 mb-6 p-1 rounded-xl border" style={{ backgroundColor: '#0A0F1C', borderColor: 'rgba(255,255,255,0.08)' }}>
+          {[
+            { key: 'dashboard' as Tab, label: 'Dashboard', icon: '□' },
+            { key: 'materiales' as Tab, label: 'Inventario', icon: '■' },
+            { key: 'tiempos' as Tab, label: 'Tiempos', icon: '△' },
+            { key: 'productos' as Tab, label: 'Productos', icon: '○' },
+          ].map((t) => (
             <button
-              onClick={refresh}
-              className="px-4 py-2 rounded-lg text-sm font-medium transition-all"
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all"
               style={{
-                backgroundColor: '#7C3AED',
-                color: '#F9FAFB',
+                backgroundColor: tab === t.key ? '#7C3AED' : 'transparent',
+                color: tab === t.key ? '#F9FAFB' : '#4B5563',
               }}
             >
-              Reintentar
+              {t.label}
             </button>
-          </motion.div>
-        )}
+          ))}
+        </div>
 
-        {!loading && !error && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.15 }}
-          >
-            <AdminTable
-              solicitudes={paginated}
-              onEstadoChange={updateLocalEstado}
-            />
+        {/* Tab: Materiales */}
+        {tab === 'materiales' && <InventarioMateriales />}
 
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={filtered.length}
-              pageSize={PAGE_SIZE}
-              onPageChange={setCurrentPage}
-            />
-          </motion.div>
+        {/* Tab: Tiempos */}
+        {tab === 'tiempos' && <TiemposProduccion />}
+
+        {/* Tab: Productos */}
+        {tab === 'productos' && <InventarioProductos />}
+
+        {/* Tab: Dashboard */}
+        {tab === 'dashboard' && (
+          <>
+            {/* KPIs */}
+            {!loading && !error && (
+              <div className="mb-6">
+                <KpiCards total={filtered.length} contadores={contadores} />
+              </div>
+            )}
+
+            {/* Charts */}
+            {!loading && !error && filtered.length > 0 && (
+              <div className="mb-6">
+                <Charts data={filtered} />
+              </div>
+            )}
+
+            {/* Filters */}
+            <div className="mb-4">
+              <FilterBar
+                solicitudes={solicitudes}
+                searchQuery={searchQuery}
+                onSearchChange={(q) => { setSearchQuery(q); handleFilterChange(); }}
+                ciudadFiltro={ciudadFiltro}
+                onCiudadChange={(c) => { setCiudadFiltro(c); handleFilterChange(); }}
+                estadoFiltro={estadoFiltro}
+                onEstadoChange={(e) => { setEstadoFiltro(e); handleFilterChange(); }}
+                prioridadFiltro={prioridadFiltro}
+                onPrioridadChange={(p) => { setPrioridadFiltro(p); handleFilterChange(); }}
+              />
+            </div>
+
+            {/* Content */}
+            {loading && (
+              <div className="space-y-3">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-14 rounded-xl animate-pulse"
+                    style={{ backgroundColor: '#111827' }}
+                  />
+                ))}
+              </div>
+            )}
+
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col items-center justify-center py-20 gap-4"
+              >
+                <div
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl"
+                  style={{ backgroundColor: '#1A2235' }}
+                >
+                  ⚠️
+                </div>
+                <p className="text-lg font-medium" style={{ color: '#EF4444' }}>
+                  Error al cargar solicitudes
+                </p>
+                <p className="text-sm" style={{ color: '#4B5563' }}>{error}</p>
+                <button
+                  onClick={refresh}
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                  style={{
+                    backgroundColor: '#7C3AED',
+                    color: '#F9FAFB',
+                  }}
+                >
+                  Reintentar
+                </button>
+              </motion.div>
+            )}
+
+            {!loading && !error && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.15 }}
+              >
+                <AdminTable
+                  solicitudes={paginated}
+                  onEstadoChange={updateLocalEstado}
+                />
+
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={filtered.length}
+                  pageSize={PAGE_SIZE}
+                  onPageChange={setCurrentPage}
+                />
+              </motion.div>
+            )}
+          </>
         )}
       </div>
     </div>

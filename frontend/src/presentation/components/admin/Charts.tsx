@@ -2,10 +2,9 @@
 import { useMemo } from 'react';
 import {
   PieChart, Pie, Cell, ResponsiveContainer,
-  BarChart, Bar, XAxis, YAxis, Tooltip,
-  LineChart, Line, CartesianGrid,
+  BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid,
 } from 'recharts';
-import { Solicitud, ESTADO_LABELS, ESTADO_COLORS } from '@/types';
+import { Solicitud, ESTADO_LABELS, ESTADO_COLORS, PRIORIDAD_LABELS, PRIORIDAD_COLORS } from '@/types';
 
 interface ChartsProps {
   data: Solicitud[];
@@ -39,14 +38,27 @@ export function Charts({ data }: ChartsProps) {
       .map(([name, value]) => ({ name, value }));
   }, [data]);
 
-  const porFecha = useMemo(() => {
+  const porPrioridad = useMemo(() => {
     const map: Record<string, number> = {};
     data.forEach((s) => {
-      const key = new Date(s.fechaRegistro).toLocaleDateString('es-CO', { month: 'short', day: 'numeric' });
-      map[key] = (map[key] ?? 0) + 1;
+      const p = s.prioridad ?? 'MEDIA';
+      map[p] = (map[p] ?? 0) + 1;
     });
-    return Object.entries(map).map(([date, count]) => ({ date, count }));
+    return (Object.keys(PRIORIDAD_LABELS) as (keyof typeof PRIORIDAD_LABELS)[]).map((k) => ({
+      name: PRIORIDAD_LABELS[k],
+      value: map[k] ?? 0,
+      color: PRIORIDAD_COLORS[k],
+    }));
   }, [data]);
+
+  const total = data.length;
+  const stats = useMemo(() => {
+    if (total === 0) return null;
+    const ciudades = new Set(data.map((s) => s.ciudad)).size;
+    const estadosUsados = new Set(data.map((s) => s.estado)).size;
+    const conPrioridadAlta = data.filter((s) => (s.prioridad ?? 'MEDIA') === 'ALTA').length;
+    return { ciudades, estadosUsados, conPrioridadAlta };
+  }, [data, total]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
@@ -100,30 +112,40 @@ export function Charts({ data }: ChartsProps) {
         </ResponsiveContainer>
       </ChartCard>
 
-      {/* Línea — Tiempo */}
-      <ChartCard title="En el tiempo">
-        <ResponsiveContainer width="100%" height={200}>
-          <LineChart data={porFecha} margin={{ left: 0, right: 0 }}>
-            <CartesianGrid stroke="rgba(255,255,255,0.04)" />
-            <XAxis
-              dataKey="date"
-              tick={{ fill: '#4B5563', fontSize: 10 }}
-              axisLine={false}
-              tickLine={false}
-              interval="preserveStartEnd"
-            />
-            <YAxis tick={{ fill: '#4B5563', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+      {/* Estadístico — Prioridad */}
+      <ChartCard title="Distribución por prioridad">
+        <ResponsiveContainer width="100%" height={140}>
+          <BarChart data={porPrioridad} margin={{ left: 0, right: 0, top: 5, bottom: 0 }}>
+            <CartesianGrid stroke="rgba(255,255,255,0.04)" vertical={false} />
+            <XAxis dataKey="name" tick={{ fill: '#4B5563', fontSize: 11 }} axisLine={false} tickLine={false} />
+            <YAxis hide allowDecimals={false} />
             <Tooltip contentStyle={TOOLTIP_STYLE} />
-            <Line
-              type="monotone"
-              dataKey="count"
-              stroke="#7C3AED"
-              strokeWidth={2}
-              dot={{ fill: '#7C3AED', strokeWidth: 0, r: 3 }}
-              activeDot={{ r: 5, fill: '#9B6DFF' }}
-            />
-          </LineChart>
+            <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={36}>
+              {porPrioridad.map((entry, i) => (
+                <Cell key={i} fill={entry.color} />
+              ))}
+            </Bar>
+          </BarChart>
         </ResponsiveContainer>
+        {/* Statistical summary */}
+        {stats && (
+          <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+            <div className="text-center">
+              <p className="text-lg font-bold" style={{ color: '#F9FAFB' }}>{total}</p>
+              <p className="text-[10px] uppercase tracking-wider" style={{ color: '#4B5563' }}>Total</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-bold" style={{ color: '#EF4444' }}>{stats.conPrioridadAlta}</p>
+              <p className="text-[10px] uppercase tracking-wider" style={{ color: '#4B5563' }}>
+                Alta {total > 0 ? `(${Math.round((stats.conPrioridadAlta / total) * 100)}%)` : ''}
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-bold" style={{ color: '#3B82F6' }}>{stats.ciudades}</p>
+              <p className="text-[10px] uppercase tracking-wider" style={{ color: '#4B5563' }}{...{}}>Ciudades</p>
+            </div>
+          </div>
+        )}
       </ChartCard>
     </div>
   );
